@@ -1,0 +1,14 @@
+{
+  "name": "pca9685ramp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node --napi-modules test.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "node-addon-api": "^6.0.0"
+  }
+}
