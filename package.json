@@ -1,6 +1,6 @@
 {
   "name": "pca9685ramp",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -11,5 +11,9 @@
   "license": "ISC",
   "dependencies": {
     "node-addon-api": "^6.0.0"
-  }
+  },
+"repository": {
+    "type": "git",
+    "url": "https://github.com/paulash/PCA9685Ramp.git"
+},
 }
