@@ -36,9 +36,10 @@ constexpr uint8_t OUTDRV             = 0x04;
 
 class ServoAsyncWorker : public AsyncWorker {
  public:
-  ServoAsyncWorker(Function& callback, 
+  ServoAsyncWorker(Function& callback,
     const uint16_t minServoPWM, const uint16_t maxServoPWM, 
-    const std::string& device, const uint8_t address);
+    const std::string& device, const uint8_t address, 
+    const uint16_t (&pwms)[ALL_SERVO]);
   virtual ~ServoAsyncWorker(){};
 
   void Execute();
@@ -54,12 +55,17 @@ private:
     double frequency = 200.0;
     bool shutdown = false;
 
-    uint16_t MinServoPWM = 250;
+    uint16_t MinServoPWM = 200;
     uint16_t MaxServoPWM = 500;
 
 public:
     void SetPWM(uint16_t servoIndex, uint16_t targetDegrees, uint16_t duration) {
         pthread_mutex_lock(&ramp_mutex);
+
+        // clamp the max degrees to the valid range, 0-255.
+        if (targetDegrees > 255) {
+            targetDegrees = 255;
+        }
 
         // remap the degrees from 0-255 to MinServoPWM-MaxServoPWM pwm
         uint16_t out_max = MaxServoPWM, out_min = MinServoPWM, in_min = 0, in_max = 255;

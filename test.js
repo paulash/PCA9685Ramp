@@ -11,8 +11,12 @@ Math.map = function (value, in_min, in_max, out_min, out_max) {
     return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
-PCA9685Ramp.Initialize(200, 500, "/dev/i2c-1", 0x40, () => {});
-
+console.log("running servo test.");
+PCA9685Ramp.Initialize(200, 500, "/dev/i2c-1", 0x40,
+    [   
+        127, 127, 127, 127, 127, 127, 127, 127,
+        127, 127, 127, 127, 127, 127, 127, 127
+    ]);
 process.on('exit',() => {
     PCA9685Ramp.Shutdown();
 });

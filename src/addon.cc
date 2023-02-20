@@ -5,17 +5,43 @@ using namespace Napi;
 
 std::unique_ptr<ServoAsyncWorker> _ServoAsyncWorker = NULL;
 
+void DoNothing(const CallbackInfo& info) {}
+
 // minPWM, maxPWM, i2c device, i2c address.
 void Initialize(const CallbackInfo& info) {
+    Napi::Env env = info.Env();
+
     auto minPWM = info[0].As<Number>().Uint32Value();
     auto maxPWM = info[1].As<Number>().Uint32Value();
 
     auto device = info[2].As<String>();
     auto address = info[3].As<Number>().Uint32Value();
 
-    Function callback = info[4].As<Function>();
+    
+    uint16_t pwms[ALL_SERVO];
+    Array startDegrees = info[4].As<Array>();
+
+    if (startDegrees.Length() != ALL_SERVO) {
+        Napi::TypeError::New(env, "Invalid startDegrees length, must be 16 u32 values between 0-255.")
+            .ThrowAsJavaScriptException();
+        std::cout << "invalid startDegrees length";
+        return;
+    }
+    
+    for (uint32_t i=0; i < startDegrees.Length(); i++) {
+        Value v = startDegrees[i];
+        if (v.IsNumber()) {
+            pwms[i] = v.As<Number>().Uint32Value();
+        } else {
+            Napi::TypeError::New(env, "Invalid startDegrees length, must be 16 u32 values between 0-255.")
+                .ThrowAsJavaScriptException();
+            return;
+        }
+    }
+    
+    Function callback = Function::New<DoNothing>(env);
     if (_ServoAsyncWorker == NULL) {
-        _ServoAsyncWorker = std::make_unique<ServoAsyncWorker>(callback, minPWM, maxPWM, device, address);
+        _ServoAsyncWorker = std::make_unique<ServoAsyncWorker>(callback, minPWM, maxPWM, device, address, pwms);
         _ServoAsyncWorker->Queue();
     }
 }

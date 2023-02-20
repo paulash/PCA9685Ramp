@@ -1,6 +1,6 @@
 {
     "name": "pca9685ramp",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "description": "handles the i2c bus communcation between nodejs and a PCA9685 driver board, but also includes ramping on the cpp side for much higher speeds.",
     "main": "index.js",
     "scripts": {

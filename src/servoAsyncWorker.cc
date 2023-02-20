@@ -3,9 +3,10 @@
 #include <iostream>
 #include "servoAsyncWorker.h"
 
-ServoAsyncWorker::ServoAsyncWorker(Function& callback, 
+ServoAsyncWorker::ServoAsyncWorker(Function& callback,
     const uint16_t minServoPWM, const uint16_t maxServoPWM, 
-    const std::string& device, const uint8_t address) : AsyncWorker(callback) 
+    const std::string& device, const uint8_t address,
+    const uint16_t (&pwms)[ALL_SERVO]) : AsyncWorker(callback) // pass an empty function AsyncWorker requires one, but we don't use it.
 {
     MinServoPWM = minServoPWM;
     MaxServoPWM = maxServoPWM;
@@ -22,12 +23,13 @@ ServoAsyncWorker::ServoAsyncWorker(Function& callback,
     i2c_dev->WriteRegisterByte(MODE1, mode1_val);
     std::this_thread::sleep_for(std::chrono::milliseconds(5));
 
-    std::cout << "Servo Worker Initialized.\n";
+    //std::cout << "Servo Worker Initialized.\n";
 
     // initialize to known values, 127 is the 'middle' of the throw range.
     set_pwm_freq(60);
     for (int i=0; i < ALL_SERVO; i++) {
-        SetPWM(i, 127, 0);
+        //std::cout << "init:" + std::to_string(i) + ":" + std::to_string(pwms[i]) + "\n";
+        SetPWM(i, pwms[i], 0);
         set_pwm(i, 0, ramps[i].getValue());
     }
 };
