@@ -5,13 +5,16 @@ using namespace Napi;
 
 std::unique_ptr<ServoAsyncWorker> _ServoAsyncWorker = NULL;
 
-void Initalize(const CallbackInfo& info) {
-    auto device = info[0].As<String>();
-    auto address = info[1].As<Number>().Uint32Value();
+void Initialize(const CallbackInfo& info) {
+    auto minPWM = info[0].As<Number>().Uint32Value();
+    auto maxPWM = info[1].As<Number>().Uint32Value();
 
-    Function callback = info[2].As<Function>();
+    auto device = info[2].As<String>();
+    auto address = info[3].As<Number>().Uint32Value();
+
+    Function callback = info[4].As<Function>();
     if (_ServoAsyncWorker == NULL) {
-        _ServoAsyncWorker = std::make_unique<ServoAsyncWorker>(callback, 250, 500, device, address);
+        _ServoAsyncWorker = std::make_unique<ServoAsyncWorker>(callback, minPWM, maxPWM, device, address);
         _ServoAsyncWorker->Queue();
     }
 }
@@ -31,7 +34,7 @@ void Shutdown(const CallbackInfo& info) {
 
 Napi::Object Init(Napi::Env env, Napi::Object exports) {
   exports["SetPWM"] = Function::New(env, SetPWM, std::string("SetPWM"));
-  exports["Initalize"] = Function::New(env, Initalize, std::string("Initalize"));
+  exports["Initialize"] = Function::New(env, Initialize, std::string("Initialize"));
   exports["Shutdown"] = Function::New(env, Shutdown, std::string("Shutdown"));
   return exports;
 }

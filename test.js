@@ -11,7 +11,7 @@ Math.map = function (value, in_min, in_max, out_min, out_max) {
     return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
-PCA9685Ramp.Initalize("/dev/i2c-1", 0x40, () => {});
+PCA9685Ramp.Initialize(200, 500, "/dev/i2c-1", 0x40, () => {});
 
 process.on('exit',() => {
     PCA9685Ramp.Shutdown();
@@ -36,7 +36,7 @@ setInterval(() => {
         if (servoIndex >= 8 / 2) {
             servoIndex += 8;
         }
-        PCA9685Ramp.SetPWM(servoIndex, Math.map(degrees, 0, 180, 200, 500), 250);
+        PCA9685Ramp.SetPWM(servoIndex, Math.map(degrees, 0, 180, 0, 255), 250);
     }
 
     if ( gate_index >= GATE.length)  {

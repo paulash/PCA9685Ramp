@@ -24,11 +24,11 @@ ServoAsyncWorker::ServoAsyncWorker(Function& callback,
 
     std::cout << "Servo Worker Initialized.\n";
 
-    // initialize to known values.
+    // initialize to known values, 127 is the 'middle' of the throw range.
     set_pwm_freq(60);
     for (int i=0; i < ALL_SERVO; i++) {
-        SetPWM(i, 350, 0);
-        set_pwm(i, 0, 350);
+        SetPWM(i, 127, 0);
+        set_pwm(i, 0, ramps[i].getValue());
     }
 };
 
@@ -40,8 +40,10 @@ void ServoAsyncWorker::Execute() {
 
         pthread_mutex_lock(&ramp_mutex);
         for (int i=0; i < ALL_SERVO; i++) {
+            if (ramps[i].isFinished()) continue;
             __u16 value = ramps[i].update(millis_now);
             set_pwm(i, 0, value);
+            //std::cout << std::to_string(i) + ":" + std::to_string(value);
         }
         pthread_mutex_unlock(&ramp_mutex);
     }
