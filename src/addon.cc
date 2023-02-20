@@ -5,6 +5,7 @@ using namespace Napi;
 
 std::unique_ptr<ServoAsyncWorker> _ServoAsyncWorker = NULL;
 
+// minPWM, maxPWM, i2c device, i2c address.
 void Initialize(const CallbackInfo& info) {
     auto minPWM = info[0].As<Number>().Uint32Value();
     auto maxPWM = info[1].As<Number>().Uint32Value();
@@ -19,6 +20,7 @@ void Initialize(const CallbackInfo& info) {
     }
 }
 
+// servoIndex, targetDegrees [between 0-255 remapped to the minPWM/maxPWM], duration in milliseconds to arrive at the new degrees.
 void SetPWM(const CallbackInfo& info) {
     uint16_t servoIndex = info[0].As<Number>().Uint32Value();
     uint16_t targetDegrees = info[1].As<Number>().Uint32Value();
