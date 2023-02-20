@@ -2,7 +2,11 @@ A Node Addon API for the raspberry pi to communcate with the PCA9685 16-bit serv
 
 
 ```
-const PCA9685Ramp = require('./build/Release/PCA9685Ramp');
+const PCA9685Ramp = require('PCA9685Ramp');
+// parameters, minPWM, maxPWM, i2c device, i2c address.
 PCA9685Ramp.Initialize(200, 500, "/dev/i2c-1", 0x40, () => {});
+// parameters, servoIndex, targetDegrees [between 0-255 remapped to the minPWM/maxPWM], duration in milliseconds to arrive at the new degrees.
 PCA9685Ramp.SetPWM(servoIndex, 0, 3000);
+// closes the i2c_bus connection, will need to be re-initialize before using it again.
+PCA9685Ramp.Shutdown();
 ```
